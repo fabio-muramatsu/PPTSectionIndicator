@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPT Section Indicator", "PPT Section Indicator\PPT Section Indicator.csproj", "{BA76F26D-268E-4841-93CC-D620C54E2E5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPT Section IndicatorTests", "PPT Section IndicatorTests\PPT Section IndicatorTests.csproj", "{C396EF37-2235-4CD2-A8EA-5E63539A1B20}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA76F26D-268E-4841-93CC-D620C54E2E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA76F26D-268E-4841-93CC-D620C54E2E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA76F26D-268E-4841-93CC-D620C54E2E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA76F26D-268E-4841-93CC-D620C54E2E5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C396EF37-2235-4CD2-A8EA-5E63539A1B20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C396EF37-2235-4CD2-A8EA-5E63539A1B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C396EF37-2235-4CD2-A8EA-5E63539A1B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C396EF37-2235-4CD2-A8EA-5E63539A1B20}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
