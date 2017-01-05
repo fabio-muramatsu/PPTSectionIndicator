@@ -72,7 +72,21 @@ namespace PPT_Section_Indicator
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
             PowerPoint.SectionProperties sections = presentation.SectionProperties;
-            if(sections.Count == 0)
+            try
+            {
+                return sections.Name(GetSectionIndex(slideIndex));
+            }
+            catch(NoSectionException e)
+            {
+                throw e;
+            }
+        }
+
+        public static int GetSectionIndex(int slideIndex)
+        {
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            PowerPoint.SectionProperties sections = presentation.SectionProperties;
+            if (sections.Count == 0)
             {
                 throw new NoSectionException("Presentation has no sections");
             }
@@ -85,11 +99,11 @@ namespace PPT_Section_Indicator
                         sections.FirstSlide(sectionIndex) + sections.SlidesCount(sectionIndex) - 1 >= slideIndex)
                         break;
                 }
-                return sections.Name(sectionIndex);
+                return sectionIndex;
             }
         }
 
-       
+
     }
 
     class SlideRangeFormatException : Exception
