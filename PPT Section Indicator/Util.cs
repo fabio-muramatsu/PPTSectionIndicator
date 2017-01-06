@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 
 namespace PPT_Section_Indicator
 {
     public class Util
     {
+        private const string SHAPE_NAME_PREFIX = "SectionIndicator";
+
         /// <summary>
         /// Checks if the slide range expression is valid.
         /// </summary>
@@ -63,6 +66,28 @@ namespace PPT_Section_Indicator
             }
         }
 
+        public static IDictionary<int, IList<int>> ClassifySlidesIntoSections(IEnumerable<int> slides)
+        {
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            PowerPoint.SectionProperties sections = presentation.SectionProperties;
+
+            Dictionary<int, IList<int>> slidesPerIndex = new Dictionary<int, IList<int>>();
+
+            if(slides.Last() > presentation.Slides.Count)
+            {
+                throw new SlideOutOfRangeException("Specified slide range exceeds the slide number in you presentation");
+            }
+            foreach(int slideIndex in slides)
+            {
+                int section = GetSectionIndex(slideIndex);
+                if (slidesPerIndex.ContainsKey(section))
+                    slidesPerIndex[section].Add(slideIndex);
+                else
+                    slidesPerIndex[section] = new List<int> { slideIndex };
+            }
+            return slidesPerIndex;
+        }
+
         /// <summary>
         /// Gets section name for a given slide index.
         /// </summary>
@@ -103,8 +128,66 @@ namespace PPT_Section_Indicator
             }
         }
 
+        public static int GetSlideIndexWithinSection(IDictionary<int, IList<int>> slidesPerSection, int slideIndex)
+        {
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            PowerPoint.SectionProperties sections = presentation.SectionProperties;
+            
+            foreach(int key in slidesPerSection.Keys)
+            {
+                IList<int> slides = slidesPerSection[key];
+                if (slides.First() <= slideIndex && slides.Last() >= slideIndex)
+                {
+                    return slides.IndexOf(slideIndex) + 1;
+                }
+                    
+            }
+            return -1;         
+        }
+
+        public static void ShowErrorMessage(String message)
+        {
+            MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public static IEnumerable<PowerPoint.Shape> GetCleanupItems()
+        {
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            LinkedList<PowerPoint.Shape> matches = new LinkedList<PowerPoint.Shape>();
+            foreach (PowerPoint.Slide slide in presentation.Slides)
+            {
+                foreach(PowerPoint.Shape shape in slide.Shapes)
+                {
+                    if (shape.Name.StartsWith(SHAPE_NAME_PREFIX))
+                        matches.AddLast(shape);
+                }
+            }
+            return matches;
+        }
+
+        public static void CleanupShapes()
+        {
+            foreach (PowerPoint.Shape shape in GetCleanupItems())
+            {
+                shape.Delete();
+            }
+        }
+
 
     }
+
+    //public static class CustomExtensions
+    //{
+    //    public static V GetValue<K,V>(this IDictionary<K,V> dict, K key)
+    //    {
+    //        V value;
+    //        bool result = dict.TryGetValue(key, out value);
+    //        if (result)
+    //            return value;
+    //        else
+
+    //    }
+    //}
 
     class SlideRangeFormatException : Exception
     {
@@ -116,6 +199,13 @@ namespace PPT_Section_Indicator
     class NoSectionException : Exception
     {
         public NoSectionException(string message) : base(message)
+        {
+        }
+    }
+
+    class SlideOutOfRangeException : Exception
+    {
+        public SlideOutOfRangeException(string message) : base(message)
         {
         }
     }

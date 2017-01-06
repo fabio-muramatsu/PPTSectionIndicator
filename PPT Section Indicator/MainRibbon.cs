@@ -22,16 +22,20 @@ namespace PPT_Section_Indicator
         private const string POSITION_TEXT_BOX = "SectionIndicator_Position_TextBox";
         private const string POSITION_SLIDE_MARKER = "SectionIndicator_Position_SlideMarker";
 
+        private const int DEFAULT_SECTION_SPACING = 150;
+
         private Dictionary<String, PowerPoint.Shape> formatShapes = new Dictionary<string, PowerPoint.Shape>();
         private Dictionary<int, PowerPoint.Shape> positionTextBoxes = new Dictionary<int, PowerPoint.Shape>();
+        private Dictionary<int, PowerPoint.Shape> positionMarkers = new Dictionary<int, PowerPoint.Shape>();
 
         bool includeSlideMarkers;
         IEnumerable<int> slideNumbers;
+        IDictionary<int, IList<int>> slidesPerSection;
 
         private void MainRibbon_Load(object sender, RibbonUIEventArgs e)
         {
-            Globals.ThisAddIn.Application.AfterPresentationOpen += new PowerPoint.EApplication_AfterPresentationOpenEventHandler(enableAddIn);
-            Globals.ThisAddIn.Application.AfterNewPresentation += new PowerPoint.EApplication_AfterNewPresentationEventHandler(enableAddIn);
+            Globals.ThisAddIn.Application.AfterPresentationOpen += new PowerPoint.EApplication_AfterPresentationOpenEventHandler(enableAddInStart);
+            Globals.ThisAddIn.Application.AfterNewPresentation += new PowerPoint.EApplication_AfterNewPresentationEventHandler(enableAddInStart);
             Globals.ThisAddIn.Application.PresentationClose += new PowerPoint.EApplication_PresentationCloseEventHandler(disableAddIn);
 
             disableAddIn(null);
@@ -50,16 +54,23 @@ namespace PPT_Section_Indicator
             {
                 slideNumbers = Util.GetSlidesFromRangeExpr(slideRangeEditBox.Text);
             }
-            catch (SlideRangeFormatException)
+            catch (SlideRangeFormatException srfe)
             {
-                //TODO Display error message
+                Util.ShowErrorMessage(srfe.Message);
+                return;
+            }
+
+            if(presentation.SectionProperties.Count == 0)
+            {
+                Util.ShowErrorMessage("There are no sections in the presentation");
+                return;
             }
 
             PowerPoint.Slide firstSlide = presentation.Slides[slideNumbers.First()];
             firstSlide.Select();
 
             StepOneInsertFormatPlaceholders(firstSlide);
-
+            enableAddInStepOne();
         }
 
         private void StepOneNextButton_Click(object sender, RibbonControlEventArgs e)
@@ -71,10 +82,12 @@ namespace PPT_Section_Indicator
             try
             {
                 previousSection = Util.GetSectionIndex(slideNumbers.First());
+                slidesPerSection = Util.ClassifySlidesIntoSections(slideNumbers);
             }
-            catch (NoSectionException)
+            catch (NoSectionException nse)
             {
-                //show error
+                Util.ShowErrorMessage(nse.Message);
+                return;
             }
             foreach (int slideIndex in slideNumbers)
             {
@@ -87,6 +100,10 @@ namespace PPT_Section_Indicator
                 {
                     StepTwoInsertTextBoxes(currentSection);
                 }
+
+                if (includeSlideMarkers)
+                    StepTwoInsertSlideMarkers(currentSection, slideIndex);
+
                 previousSection = currentSection;
             }
 
@@ -94,6 +111,21 @@ namespace PPT_Section_Indicator
             {
                 shape.Visible = Microsoft.Office.Core.MsoTriState.msoFalse;
             }
+            enableAddInStepTwo();
+        }
+
+        private void StepTwoDoneButton_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
+        private void CleanupButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            formatShapes.Clear();
+            positionMarkers.Clear();
+            positionTextBoxes.Clear();
+            enableAddInStart(null);
+            Util.CleanupShapes();
         }
 
         private void StepOneInsertFormatPlaceholders(PowerPoint.Slide slide)
@@ -164,7 +196,7 @@ namespace PPT_Section_Indicator
                 IEnumerator enumerator = firstSlide.Shapes.Paste().GetEnumerator();
                 enumerator.MoveNext();
                 PowerPoint.Shape newTextBox = (PowerPoint.Shape)enumerator.Current;
-                newTextBox.Left = 100 * (section - 1) + 10;
+                newTextBox.Left = DEFAULT_SECTION_SPACING * (section - 1) + 10;
                 newTextBox.Top = 10;
                 newTextBox.Name = POSITION_TEXT_BOX + "_" + section;
                 newTextBox.TextFrame.TextRange.Text = presentation.SectionProperties.Name(section);
@@ -172,12 +204,68 @@ namespace PPT_Section_Indicator
             }
         }
 
-        public void enableAddIn(PowerPoint.Presentation presentation)
+        private void StepTwoInsertSlideMarkers(int section, int slideIndex)
+        {
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            PowerPoint.Slide firstSlide = presentation.Slides[slideNumbers.First()];
+
+            PowerPoint.Shape marker;
+            if(slideIndex == slideNumbers.First())
+            {
+                formatShapes.TryGetValue(FORMAT_CURRENT_SLIDE_SLIDE_MARKER, out marker);
+            }
+            else if (section == 1)
+            {
+                formatShapes.TryGetValue(FORMAT_ACTIVE_SECTION_SLIDE_MARKER, out marker);
+            }
+            else
+            {
+                formatShapes.TryGetValue(FORMAT_INACTIVE_SECTION_SLIDE_MARKER, out marker);
+            }
+
+            int maxNumberOfMarkers = (int)Math.Floor(DEFAULT_SECTION_SPACING / (marker.Width + 2));
+
+            marker.Copy();
+            IEnumerator enumerator = firstSlide.Shapes.Paste().GetEnumerator();
+            enumerator.MoveNext();
+            PowerPoint.Shape newMarker = (PowerPoint.Shape)enumerator.Current;
+
+            int slideIndexWithinSection = Util.GetSlideIndexWithinSection(slidesPerSection, slideIndex);
+            float left = 18 + (section - 1) * DEFAULT_SECTION_SPACING + ((slideIndexWithinSection - 1) % maxNumberOfMarkers) * (newMarker.Width + 2);
+            float top = 10 + positionTextBoxes[section].Height + ((slideIndexWithinSection - 1)/maxNumberOfMarkers) * (marker.Height + 5);
+
+            newMarker.Left = left;
+            newMarker.Top = top;
+            newMarker.Name = POSITION_SLIDE_MARKER + "_" + section + "_" + slideIndex;
+            positionMarkers.Add(slideIndex, newMarker);
+        }
+
+        public void enableAddInStart(PowerPoint.Presentation presentation)
         {
             slideMarkerCheckBox.Enabled = true;
             slideRangeEditBox.Enabled = true;
             startButton.Enabled = true;
+            stepOneNextButton.Enabled = false;
+            stepTwoDoneButton.Enabled = false;
+            cleanPresentationButton.Enabled = true;
+        }
+
+        public void enableAddInStepOne()
+        {
+            slideMarkerCheckBox.Enabled = false;
+            slideRangeEditBox.Enabled = false;
+            startButton.Enabled = false;
             stepOneNextButton.Enabled = true;
+            stepTwoDoneButton.Enabled = false;
+        }
+
+        public void enableAddInStepTwo()
+        {
+            slideMarkerCheckBox.Enabled = false;
+            slideRangeEditBox.Enabled = false;
+            startButton.Enabled = false;
+            stepOneNextButton.Enabled = false;
+            stepTwoDoneButton.Enabled = true;
         }
 
         public void disableAddIn(PowerPoint.Presentation presentation)
@@ -186,8 +274,7 @@ namespace PPT_Section_Indicator
             slideRangeEditBox.Enabled = false;
             startButton.Enabled = false;
             stepOneNextButton.Enabled = false;
+            cleanPresentationButton.Enabled = false;
         }
-
-
     }
 }

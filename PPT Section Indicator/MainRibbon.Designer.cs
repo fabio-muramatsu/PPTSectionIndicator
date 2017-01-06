@@ -38,19 +38,25 @@
             this.group1 = this.Factory.CreateRibbonGroup();
             this.slideMarkerCheckBox = this.Factory.CreateRibbonCheckBox();
             this.slideRangeEditBox = this.Factory.CreateRibbonEditBox();
-            this.startButton = this.Factory.CreateRibbonButton();
             this.group2 = this.Factory.CreateRibbonGroup();
+            this.group3 = this.Factory.CreateRibbonGroup();
+            this.cleanPresentationButton = this.Factory.CreateRibbonButton();
+            this.startButton = this.Factory.CreateRibbonButton();
             this.stepOneNextButton = this.Factory.CreateRibbonButton();
-            this.button2 = this.Factory.CreateRibbonButton();
+            this.stepOneAboutButton = this.Factory.CreateRibbonButton();
+            this.stepTwoDoneButton = this.Factory.CreateRibbonButton();
+            this.stepTwoAboutButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
+            this.group3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab1
             // 
             this.tab1.Groups.Add(this.group1);
             this.tab1.Groups.Add(this.group2);
+            this.tab1.Groups.Add(this.group3);
             this.tab1.Label = "Section Indicator";
             this.tab1.Name = "tab1";
             // 
@@ -58,6 +64,7 @@
             // 
             this.group1.Items.Add(this.slideMarkerCheckBox);
             this.group1.Items.Add(this.slideRangeEditBox);
+            this.group1.Items.Add(this.cleanPresentationButton);
             this.group1.Items.Add(this.startButton);
             this.group1.Label = "Settings";
             this.group1.Name = "group1";
@@ -78,6 +85,29 @@
     " pages or ranges with \";\" and use \"-\" to indicate page ranges.";
             this.slideRangeEditBox.Text = null;
             // 
+            // group2
+            // 
+            this.group2.Items.Add(this.stepOneNextButton);
+            this.group2.Items.Add(this.stepOneAboutButton);
+            this.group2.Label = "Step 1";
+            this.group2.Name = "group2";
+            // 
+            // group3
+            // 
+            this.group3.Items.Add(this.stepTwoDoneButton);
+            this.group3.Items.Add(this.stepTwoAboutButton);
+            this.group3.Label = "Step 2";
+            this.group3.Name = "group3";
+            // 
+            // cleanPresentationButton
+            // 
+            this.cleanPresentationButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.cleanPresentationButton.Image = global::PPT_Section_Indicator.Properties.Resources.cancel;
+            this.cleanPresentationButton.Label = "Cleanup";
+            this.cleanPresentationButton.Name = "cleanPresentationButton";
+            this.cleanPresentationButton.ShowImage = true;
+            this.cleanPresentationButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.CleanupButton_Click);
+            // 
             // startButton
             // 
             this.startButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -86,13 +116,6 @@
             this.startButton.Name = "startButton";
             this.startButton.ShowImage = true;
             this.startButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StartButton_Click);
-            // 
-            // group2
-            // 
-            this.group2.Items.Add(this.stepOneNextButton);
-            this.group2.Items.Add(this.button2);
-            this.group2.Label = "Step 1";
-            this.group2.Name = "group2";
             // 
             // stepOneNextButton
             // 
@@ -103,13 +126,30 @@
             this.stepOneNextButton.ShowImage = true;
             this.stepOneNextButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StepOneNextButton_Click);
             // 
-            // button2
+            // stepOneAboutButton
             // 
-            this.button2.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.button2.Image = global::PPT_Section_Indicator.Properties.Resources.info;
-            this.button2.Label = "Info";
-            this.button2.Name = "button2";
-            this.button2.ShowImage = true;
+            this.stepOneAboutButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.stepOneAboutButton.Image = global::PPT_Section_Indicator.Properties.Resources.info;
+            this.stepOneAboutButton.Label = "About this step";
+            this.stepOneAboutButton.Name = "stepOneAboutButton";
+            this.stepOneAboutButton.ShowImage = true;
+            // 
+            // stepTwoDoneButton
+            // 
+            this.stepTwoDoneButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.stepTwoDoneButton.Image = global::PPT_Section_Indicator.Properties.Resources.done;
+            this.stepTwoDoneButton.Label = "Done";
+            this.stepTwoDoneButton.Name = "stepTwoDoneButton";
+            this.stepTwoDoneButton.ShowImage = true;
+            this.stepTwoDoneButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StepTwoDoneButton_Click);
+            // 
+            // stepTwoAboutButton
+            // 
+            this.stepTwoAboutButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.stepTwoAboutButton.Image = global::PPT_Section_Indicator.Properties.Resources.info;
+            this.stepTwoAboutButton.Label = "About this step";
+            this.stepTwoAboutButton.Name = "stepTwoAboutButton";
+            this.stepTwoAboutButton.ShowImage = true;
             // 
             // MainRibbon
             // 
@@ -123,6 +163,8 @@
             this.group1.PerformLayout();
             this.group2.ResumeLayout(false);
             this.group2.PerformLayout();
+            this.group3.ResumeLayout(false);
+            this.group3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -136,7 +178,11 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton startButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group2;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton stepOneNextButton;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton button2;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton stepOneAboutButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group3;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton stepTwoDoneButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton stepTwoAboutButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton cleanPresentationButton;
     }
 
     partial class ThisRibbonCollection
