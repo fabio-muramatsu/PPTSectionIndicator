@@ -19,8 +19,10 @@ namespace PPT_Section_Indicator
         private const string FORMAT_CURRENT_SLIDE_SLIDE_MARKER = "SectionIndicator_Format_CurrentSlideSlideMarker";
         private const string FORMAT_INACTIVE_SECTION_SLIDE_MARKER = "SectionIndicator_Format_InactiveSectionSlideMarker";
 
-        private const string POSITION_TEXT_BOX = "SectionIndicator_Position_TextBox";
-        private const string POSITION_SLIDE_MARKER = "SectionIndicator_Position_SlideMarker";
+        public static readonly string POSITION_TEXT_BOX = "SectionIndicator_Position_TextBox";
+        public static readonly string POSITION_SLIDE_MARKER = "SectionIndicator_Position_SlideMarker";
+
+        private const string GROUPED_SHAPES = "SectionIndicator_GroupedItems";
 
         private const int DEFAULT_SECTION_SPACING = 150;
 
@@ -116,7 +118,8 @@ namespace PPT_Section_Indicator
 
         private void StepTwoDoneButton_Click(object sender, RibbonControlEventArgs e)
         {
-
+            PowerPoint.Shape groupedShapes = StepThreeGroupShapes();
+            StepThreePopulateSelectedSlides(groupedShapes);
         }
 
         private void CleanupButton_Click(object sender, RibbonControlEventArgs e)
@@ -238,6 +241,70 @@ namespace PPT_Section_Indicator
             newMarker.Top = top;
             newMarker.Name = POSITION_SLIDE_MARKER + "_" + section + "_" + slideIndex;
             positionMarkers.Add(slideIndex, newMarker);
+        }
+
+        private PowerPoint.Shape StepThreeGroupShapes()
+        {
+            Microsoft.Office.Core.MsoTriState selectionMode = Microsoft.Office.Core.MsoTriState.msoTrue;
+            foreach (PowerPoint.Shape s in positionTextBoxes.Values)
+            {
+                s.Select(selectionMode);
+
+                //Change selection mode to keep previous selections
+                if (selectionMode == Microsoft.Office.Core.MsoTriState.msoTrue)
+                    selectionMode = Microsoft.Office.Core.MsoTriState.msoFalse;
+            }
+            foreach (PowerPoint.Shape s in positionMarkers.Values)
+            {
+                s.Select(selectionMode);
+            }
+
+
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            PowerPoint.ShapeRange selectedShapes = presentation.Windows[1].Selection.ShapeRange;
+            PowerPoint.Shape groupedShapes = selectedShapes.Group();
+            groupedShapes.Name = GROUPED_SHAPES;
+            return groupedShapes;
+        }
+
+        private void StepThreePopulateSelectedSlides(PowerPoint.Shape groupedShapes)
+        {
+            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+
+            int prevSection = 1;
+            bool skippedFirst = false;
+
+            foreach (int section in slidesPerSection.Keys)
+            {
+                foreach(int slideIndex in slidesPerSection[section])
+                {
+                    if (!skippedFirst)
+                    {
+                        skippedFirst = !skippedFirst;
+                        continue; //First slide is already done
+                    }
+                    groupedShapes.Copy();
+                    PowerPoint.Slide curSlide = presentation.Slides[slideIndex];
+                    IEnumerator enumerator = curSlide.Shapes.Paste().GetEnumerator();
+                    enumerator.MoveNext();
+                    groupedShapes = (PowerPoint.Shape)enumerator.Current;
+
+                    if (section != prevSection)
+                    {
+                        PowerPoint.Shape inactiveTextBox = formatShapes[FORMAT_INACTIVE_SECTION_TEXT_BOX];
+                        inactiveTextBox.PickUp();
+                        PowerPoint.Shape textBox = Util.FindTextBoxFromGroup(groupedShapes, prevSection);
+                        textBox.Apply();
+
+                        PowerPoint.Shape activeTextBox = formatShapes[FORMAT_ACTIVE_SECTION_TEXT_BOX];
+                        activeTextBox.PickUp();
+                        textBox = Util.FindTextBoxFromGroup(groupedShapes, section);
+                        textBox.Apply();
+
+                        prevSection = section;
+                    }
+                }
+            }
         }
 
         public void enableAddInStart(PowerPoint.Presentation presentation)

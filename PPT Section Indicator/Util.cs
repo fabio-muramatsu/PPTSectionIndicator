@@ -173,6 +173,28 @@ namespace PPT_Section_Indicator
             }
         }
 
+        public static PowerPoint.Shape FindTextBoxFromGroup(PowerPoint.Shape groupedShape, int section)
+        {
+            string name = MainRibbon.POSITION_TEXT_BOX + "_" + section;
+            foreach(PowerPoint.Shape s in groupedShape.GroupItems)
+            {
+                if (s.Name.Equals(name))
+                    return s;
+            }
+            return null;
+        }
+
+        public static PowerPoint.Shape FindMarkerFromGroup(PowerPoint.Shape groupedShape, int section, int slideIndex)
+        {
+            string name = MainRibbon.POSITION_SLIDE_MARKER + "_" + section + "_" + slideIndex;
+            foreach (PowerPoint.Shape s in groupedShape.GroupItems)
+            {
+                if (s.Name.Equals(name))
+                    return s;
+            }
+            return null;
+        }
+
 
     }
 
