@@ -23,7 +23,7 @@ namespace PPT_Section_Indicator
         {
             bool isMatch = Regex.Match(input, @"^\s*\d+(\s*-\s*\d+)?(\s*;\s*\d+(\s*-\s*\d+)?)*\s*$").Success;
             Debug.WriteLine(isMatch ? input + "is valid" : input + "is not valid");
-            return isMatch; 
+            return isMatch;
         }
 
         /// <summary>
@@ -32,13 +32,13 @@ namespace PPT_Section_Indicator
         /// <param name="expression">The slide range expression.</param>
         /// <returns>An IEnumerable object containing the slide numbers sorted in ascending order.</returns>
         /// <exception cref="SlideRangeFormatException">Thrown when there is an error with the expression provided.</exception>
-        public static IEnumerable<int> GetSlidesFromRangeExpr(string expression)
+        public static IList<int> GetSlidesFromRangeExpr(string expression)
         {
             SortedSet<int> slides = new SortedSet<int>();
             if (CheckPageRangeSyntax(expression))
             {
                 string[] slideRanges = expression.Trim().Split(';');
-                foreach(string range in slideRanges)
+                foreach (string range in slideRanges)
                 {
                     string[] slideNumbers = range.Trim().Split('-');
                     if (slideNumbers.Length == 1)
@@ -47,7 +47,7 @@ namespace PPT_Section_Indicator
                     {
                         int min = int.Parse(slideNumbers[0]);
                         int max = int.Parse(slideNumbers[1]);
-                        if(max < min)
+                        if (max < min)
                         {
                             throw new SlideRangeFormatException("Wrong range format: left-hand side should be no grater than right-hand side");
                         }
@@ -58,7 +58,7 @@ namespace PPT_Section_Indicator
                     }
                 }
 
-                return slides;
+                return new List<int>(slides);
             }
             else
             {
@@ -73,11 +73,11 @@ namespace PPT_Section_Indicator
 
             Dictionary<int, IList<int>> slidesPerIndex = new Dictionary<int, IList<int>>();
 
-            if(slides.Last() > presentation.Slides.Count)
+            if (slides.Last() > presentation.Slides.Count)
             {
                 throw new SlideOutOfRangeException("Specified slide range exceeds the slide number in you presentation");
             }
-            foreach(int slideIndex in slides)
+            foreach (int slideIndex in slides)
             {
                 int section = GetSectionIndex(slideIndex);
                 if (slidesPerIndex.ContainsKey(section))
@@ -93,7 +93,7 @@ namespace PPT_Section_Indicator
         /// </summary>
         /// <param name="slideIndex">The index of the slide whose section name is to be obtained.</param>
         /// <returns>The section name where the slide is contained.</returns>
-        public static string GetSectionName (int slideIndex)
+        public static string GetSectionName(int slideIndex)
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
             PowerPoint.SectionProperties sections = presentation.SectionProperties;
@@ -101,7 +101,7 @@ namespace PPT_Section_Indicator
             {
                 return sections.Name(GetSectionIndex(slideIndex));
             }
-            catch(NoSectionException e)
+            catch (NoSectionException e)
             {
                 throw e;
             }
@@ -132,17 +132,17 @@ namespace PPT_Section_Indicator
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
             PowerPoint.SectionProperties sections = presentation.SectionProperties;
-            
-            foreach(int key in slidesPerSection.Keys)
+
+            foreach (int key in slidesPerSection.Keys)
             {
                 IList<int> slides = slidesPerSection[key];
                 if (slides.First() <= slideIndex && slides.Last() >= slideIndex)
                 {
                     return slides.IndexOf(slideIndex) + 1;
                 }
-                    
+
             }
-            return -1;         
+            return -1;
         }
 
         public static void ShowErrorMessage(String message)
@@ -156,7 +156,7 @@ namespace PPT_Section_Indicator
             LinkedList<PowerPoint.Shape> matches = new LinkedList<PowerPoint.Shape>();
             foreach (PowerPoint.Slide slide in presentation.Slides)
             {
-                foreach(PowerPoint.Shape shape in slide.Shapes)
+                foreach (PowerPoint.Shape shape in slide.Shapes)
                 {
                     if (shape.Name.StartsWith(SHAPE_NAME_PREFIX))
                         matches.AddLast(shape);
@@ -176,7 +176,7 @@ namespace PPT_Section_Indicator
         public static PowerPoint.Shape FindTextBoxFromGroup(PowerPoint.Shape groupedShape, int section)
         {
             string name = MainRibbon.POSITION_TEXT_BOX + "_" + section;
-            foreach(PowerPoint.Shape s in groupedShape.GroupItems)
+            foreach (PowerPoint.Shape s in groupedShape.GroupItems)
             {
                 if (s.Name.Equals(name))
                     return s;
@@ -184,15 +184,26 @@ namespace PPT_Section_Indicator
             return null;
         }
 
-        public static PowerPoint.Shape FindMarkerFromGroup(PowerPoint.Shape groupedShape, int section, int slideIndex)
+        public static bool TryGetSlideAndSectionIndexFromMarkerName
+            (string markerName, out int section, out int slideIndex)
         {
-            string name = MainRibbon.POSITION_SLIDE_MARKER + "_" + section + "_" + slideIndex;
-            foreach (PowerPoint.Shape s in groupedShape.GroupItems)
+            section = -1;
+            slideIndex = -1;
+            if (!markerName.StartsWith(MainRibbon.POSITION_SLIDE_MARKER))
+                return false;
+            string[] parts = markerName.Split('_');
+
+            try
             {
-                if (s.Name.Equals(name))
-                    return s;
+                section = int.Parse(parts[parts.Length - 2]);
+                slideIndex = int.Parse(parts[parts.Length - 1]);
+                return true;
             }
-            return null;
+            catch(Exception e) when (e is ArgumentNullException || e is FormatException || e is OverflowException)
+            {
+                return false;
+            }
+
         }
 
 

@@ -31,7 +31,7 @@ namespace PPT_Section_Indicator
         private Dictionary<int, PowerPoint.Shape> positionMarkers = new Dictionary<int, PowerPoint.Shape>();
 
         bool includeSlideMarkers;
-        IEnumerable<int> slideNumbers;
+        IList<int> slideNumbers;
         IDictionary<int, IList<int>> slidesPerSection;
 
         private void MainRibbon_Load(object sender, RibbonUIEventArgs e)
@@ -302,6 +302,66 @@ namespace PPT_Section_Indicator
                         textBox.Apply();
 
                         prevSection = section;
+                    }
+
+                    if (includeSlideMarkers)
+                    {
+                        UpdateMarkers(groupedShapes, section, slideIndex);
+                    }
+                }
+            }
+        }
+
+        public void UpdateMarkers(PowerPoint.Shape groupedShapes, int section, int slideIndex)
+        {
+            PowerPoint.Shape currentSlideMarker = formatShapes[FORMAT_CURRENT_SLIDE_SLIDE_MARKER];
+            PowerPoint.Shape activeSlideMarker = formatShapes[FORMAT_ACTIVE_SECTION_SLIDE_MARKER];
+            PowerPoint.Shape inactiveSlideMarker = formatShapes[FORMAT_INACTIVE_SECTION_SLIDE_MARKER];
+
+            int slideIndexWithinSection = Util.GetSlideIndexWithinSection(slidesPerSection, slideIndex);
+            int prevSlide = slideNumbers[slideNumbers.IndexOf(slideIndex) - 1];
+
+            foreach (PowerPoint.Shape s in groupedShapes.GroupItems)
+            {
+                //Not interested in section text boxes
+                if (s.Name.StartsWith(POSITION_TEXT_BOX))
+                    continue;
+
+                int markerSection, markerSlideIndex;
+                if(!Util.TryGetSlideAndSectionIndexFromMarkerName(s.Name, out markerSection, out markerSlideIndex))
+                {
+                    throw new AddinException("Error updating markers - TryGetSlideAndSectionIndexFromMarkerName");
+                }
+
+                //Handle marker formatting when section changes
+                if (slideIndexWithinSection == 1 && section > 1)
+                {
+                    if(markerSection == section - 1)
+                    {
+                        inactiveSlideMarker.PickUp();
+                        s.Apply();
+                    }
+                    else if (markerSection == section)
+                    {
+                        activeSlideMarker.PickUp();
+                        s.Apply();
+                    }
+                }
+
+                //Format active slide marker
+                if(section == markerSection && slideIndex == markerSlideIndex)
+                {
+                    currentSlideMarker.PickUp();
+                    s.Apply();
+                }
+
+                //Remove active marker from previous slide
+                if(slideIndexWithinSection > 1)
+                {
+                    if(markerSlideIndex == prevSlide)
+                    {
+                        activeSlideMarker.PickUp();
+                        s.Apply();
                     }
                 }
             }

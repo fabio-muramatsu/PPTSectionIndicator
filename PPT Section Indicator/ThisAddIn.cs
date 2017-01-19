@@ -33,4 +33,11 @@ namespace PPT_Section_Indicator
         
         #endregion
     }
+
+    public class AddinException : Exception
+    {
+        public AddinException(string message) : base(message)
+        {
+        }
+    }
 }
