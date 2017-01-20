@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
 using System.Collections;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PPT_Section_Indicator
 {
@@ -34,13 +36,15 @@ namespace PPT_Section_Indicator
         IList<int> slideNumbers;
         IDictionary<int, IList<int>> slidesPerSection;
 
+        private ProgressDialogBox progressDialog;
+
         private void MainRibbon_Load(object sender, RibbonUIEventArgs e)
         {
-            Globals.ThisAddIn.Application.AfterPresentationOpen += new PowerPoint.EApplication_AfterPresentationOpenEventHandler(enableAddInStart);
-            Globals.ThisAddIn.Application.AfterNewPresentation += new PowerPoint.EApplication_AfterNewPresentationEventHandler(enableAddInStart);
-            Globals.ThisAddIn.Application.PresentationClose += new PowerPoint.EApplication_PresentationCloseEventHandler(disableAddIn);
+            Globals.ThisAddIn.Application.AfterPresentationOpen += new PowerPoint.EApplication_AfterPresentationOpenEventHandler(EnableAddInStart);
+            Globals.ThisAddIn.Application.AfterNewPresentation += new PowerPoint.EApplication_AfterNewPresentationEventHandler(EnableAddInStart);
+            Globals.ThisAddIn.Application.PresentationClose += new PowerPoint.EApplication_PresentationCloseEventHandler(DisableAddIn);
 
-            disableAddIn(null);
+            DisableAddIn(null);
         }
 
         private void SlideMarkerCheckBox_Click(object sender, RibbonControlEventArgs e)
@@ -72,7 +76,7 @@ namespace PPT_Section_Indicator
             firstSlide.Select();
 
             StepOneInsertFormatPlaceholders(firstSlide);
-            enableAddInStepOne();
+            EnableAddInStepOne();
         }
 
         private void StepOneNextButton_Click(object sender, RibbonControlEventArgs e)
@@ -113,13 +117,24 @@ namespace PPT_Section_Indicator
             {
                 shape.Visible = Microsoft.Office.Core.MsoTriState.msoFalse;
             }
-            enableAddInStepTwo();
+            EnableAddInStepTwo();
         }
 
         private void StepTwoDoneButton_Click(object sender, RibbonControlEventArgs e)
         {
+            progressDialog = new ProgressDialogBox();
+            progressDialog.SetDialogBoxShownCallback(StepThreePostDialogShown);
+            progressDialog.Show();      
+        }
+
+        public async void StepThreePostDialogShown()
+        {
+            progressDialog.TopMost = true;
             PowerPoint.Shape groupedShapes = StepThreeGroupShapes();
-            StepThreePopulateSelectedSlides(groupedShapes);
+            await Task.Run(() => StepThreePopulateSelectedSlides(groupedShapes, progressDialog));
+            EnableAddInStart(null);
+            progressDialog.Close();
+
         }
 
         private void CleanupButton_Click(object sender, RibbonControlEventArgs e)
@@ -127,7 +142,7 @@ namespace PPT_Section_Indicator
             formatShapes.Clear();
             positionMarkers.Clear();
             positionTextBoxes.Clear();
-            enableAddInStart(null);
+            EnableAddInStart(null);
             Util.CleanupShapes();
         }
 
@@ -267,17 +282,20 @@ namespace PPT_Section_Indicator
             return groupedShapes;
         }
 
-        private void StepThreePopulateSelectedSlides(PowerPoint.Shape groupedShapes)
+        private void StepThreePopulateSelectedSlides(PowerPoint.Shape groupedShapes, ProgressDialogBox progressDialog)
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
 
             int prevSection = 1;
             bool skippedFirst = false;
-
+            int slidesProcessed = 0, totalSlides = slideNumbers.Count;
             foreach (int section in slidesPerSection.Keys)
             {
                 foreach(int slideIndex in slidesPerSection[section])
                 {
+                    Thread.Sleep(100);
+                    ++slidesProcessed;
+                    progressDialog.UpdateProgressMessage(slidesProcessed, totalSlides);
                     if (!skippedFirst)
                     {
                         skippedFirst = !skippedFirst;
@@ -367,7 +385,7 @@ namespace PPT_Section_Indicator
             }
         }
 
-        public void enableAddInStart(PowerPoint.Presentation presentation)
+        public void EnableAddInStart(PowerPoint.Presentation presentation)
         {
             slideMarkerCheckBox.Enabled = true;
             slideRangeEditBox.Enabled = true;
@@ -377,7 +395,7 @@ namespace PPT_Section_Indicator
             cleanPresentationButton.Enabled = true;
         }
 
-        public void enableAddInStepOne()
+        public void EnableAddInStepOne()
         {
             slideMarkerCheckBox.Enabled = false;
             slideRangeEditBox.Enabled = false;
@@ -386,7 +404,7 @@ namespace PPT_Section_Indicator
             stepTwoDoneButton.Enabled = false;
         }
 
-        public void enableAddInStepTwo()
+        public void EnableAddInStepTwo()
         {
             slideMarkerCheckBox.Enabled = false;
             slideRangeEditBox.Enabled = false;
@@ -395,13 +413,14 @@ namespace PPT_Section_Indicator
             stepTwoDoneButton.Enabled = true;
         }
 
-        public void disableAddIn(PowerPoint.Presentation presentation)
+        public void DisableAddIn(PowerPoint.Presentation presentation)
         {
             slideMarkerCheckBox.Enabled = false;
             slideRangeEditBox.Enabled = false;
             startButton.Enabled = false;
             stepOneNextButton.Enabled = false;
             cleanPresentationButton.Enabled = false;
+            stepTwoDoneButton.Enabled = false;
         }
     }
 }
