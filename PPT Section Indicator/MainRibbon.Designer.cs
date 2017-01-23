@@ -38,12 +38,12 @@
             this.group1 = this.Factory.CreateRibbonGroup();
             this.slideMarkerCheckBox = this.Factory.CreateRibbonCheckBox();
             this.slideRangeEditBox = this.Factory.CreateRibbonEditBox();
-            this.group2 = this.Factory.CreateRibbonGroup();
-            this.group3 = this.Factory.CreateRibbonGroup();
             this.cleanPresentationButton = this.Factory.CreateRibbonButton();
             this.startButton = this.Factory.CreateRibbonButton();
+            this.group2 = this.Factory.CreateRibbonGroup();
             this.stepOneNextButton = this.Factory.CreateRibbonButton();
             this.stepOneAboutButton = this.Factory.CreateRibbonButton();
+            this.group3 = this.Factory.CreateRibbonGroup();
             this.stepTwoDoneButton = this.Factory.CreateRibbonButton();
             this.stepTwoAboutButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
@@ -73,7 +73,6 @@
             // 
             this.slideMarkerCheckBox.Label = "Include slide markers";
             this.slideMarkerCheckBox.Name = "slideMarkerCheckBox";
-            this.slideMarkerCheckBox.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SlideMarkerCheckBox_Click);
             // 
             // slideRangeEditBox
             // 
@@ -84,20 +83,6 @@
             this.slideRangeEditBox.SuperTip = "Specify the slides where section progress indicators are to be inserted. Separate" +
     " pages or ranges with \";\" and use \"-\" to indicate page ranges.";
             this.slideRangeEditBox.Text = null;
-            // 
-            // group2
-            // 
-            this.group2.Items.Add(this.stepOneNextButton);
-            this.group2.Items.Add(this.stepOneAboutButton);
-            this.group2.Label = "Step 1";
-            this.group2.Name = "group2";
-            // 
-            // group3
-            // 
-            this.group3.Items.Add(this.stepTwoDoneButton);
-            this.group3.Items.Add(this.stepTwoAboutButton);
-            this.group3.Label = "Step 2";
-            this.group3.Name = "group3";
             // 
             // cleanPresentationButton
             // 
@@ -117,6 +102,13 @@
             this.startButton.ShowImage = true;
             this.startButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StartButton_Click);
             // 
+            // group2
+            // 
+            this.group2.Items.Add(this.stepOneNextButton);
+            this.group2.Items.Add(this.stepOneAboutButton);
+            this.group2.Label = "Step 1";
+            this.group2.Name = "group2";
+            // 
             // stepOneNextButton
             // 
             this.stepOneNextButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -133,6 +125,13 @@
             this.stepOneAboutButton.Label = "About this step";
             this.stepOneAboutButton.Name = "stepOneAboutButton";
             this.stepOneAboutButton.ShowImage = true;
+            // 
+            // group3
+            // 
+            this.group3.Items.Add(this.stepTwoDoneButton);
+            this.group3.Items.Add(this.stepTwoAboutButton);
+            this.group3.Label = "Step 2";
+            this.group3.Name = "group3";
             // 
             // stepTwoDoneButton
             // 

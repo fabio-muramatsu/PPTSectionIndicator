@@ -150,6 +150,11 @@ namespace PPT_Section_Indicator
             MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        public static DialogResult ShowWarningQuery(String message)
+        {
+            return MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        }
+
         public static IEnumerable<PowerPoint.Shape> GetCleanupItems()
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
@@ -184,6 +189,13 @@ namespace PPT_Section_Indicator
             return null;
         }
 
+        /// <summary>
+        /// Gets the slide and section indexes from the marker name.
+        /// </summary>
+        /// <param name="markerName">The string representing the marker name.</param>
+        /// <param name="section">The section index corresponding to the marker name.</param>
+        /// <param name="slideIndex">The slide index corresponding to the marker name.</param>
+        /// <returns>True if the processing was successful, False otherwise.</returns>
         public static bool TryGetSlideAndSectionIndexFromMarkerName
             (string markerName, out int section, out int slideIndex)
         {
@@ -199,28 +211,58 @@ namespace PPT_Section_Indicator
                 slideIndex = int.Parse(parts[parts.Length - 1]);
                 return true;
             }
-            catch(Exception e) when (e is ArgumentNullException || e is FormatException || e is OverflowException)
+            catch (Exception e) when (e is ArgumentNullException || e is FormatException || e is OverflowException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the specified slide range is consistent with the number of slides in the presentation.
+        /// </summary>
+        /// <param name="slideNumbers">The array containing the sorted slide indexes to be included in the processing.</param>
+        /// <returns>True if the range is consistent, False otherwise.</returns>
+        public static bool CheckSlideRange(IList<int> slideNumbers)
+        {
+            int numberOfSlides = Globals.ThisAddIn.Application.ActivePresentation.Slides.Count;
+            if (slideNumbers.Last() > numberOfSlides) return false;
+            else return true;
+        }
+
+        public static bool IsPresentationClean()
+        {
+            if (GetCleanupItems().Count() > 0)
+                return false;
+            else return true;
+        }
+
+        /// <summary>
+        /// Checks if the specified slide indexes are still valid in the presentation, and if their division within section are as specified in slidesPerSection.
+        /// </summary>
+        /// <param name="slideNumbers">The slide indexes to be checked.</param>
+        /// <param name="slidesPerSection">The original division in sections to be compared.</param>
+        /// <returns></returns>
+        public static bool CheckPresentationIndexesUnchanged(IList<int> slideNumbers, IDictionary<int, IList<int>> slidesPerSection)
+        {
+            try
+            {
+                IDictionary<int, IList<int>> currentSlidesPerSection = ClassifySlidesIntoSections(slideNumbers);
+
+                foreach (int key in slidesPerSection.Keys)
+                {
+                    if (!Enumerable.SequenceEqual(slidesPerSection[key], currentSlidesPerSection[key]))
+                        return false;
+                }
+            }
+            catch (Exception exc) when (exc is SlideRangeFormatException || exc is SlideOutOfRangeException || exc is KeyNotFoundException)
             {
                 return false;
             }
 
+            return true;
         }
 
-
     }
-
-    //public static class CustomExtensions
-    //{
-    //    public static V GetValue<K,V>(this IDictionary<K,V> dict, K key)
-    //    {
-    //        V value;
-    //        bool result = dict.TryGetValue(key, out value);
-    //        if (result)
-    //            return value;
-    //        else
-
-    //    }
-    //}
 
     class SlideRangeFormatException : Exception
     {
@@ -239,6 +281,13 @@ namespace PPT_Section_Indicator
     class SlideOutOfRangeException : Exception
     {
         public SlideOutOfRangeException(string message) : base(message)
+        {
+        }
+    }
+
+    public class AddinException : Exception
+    {
+        public AddinException(string message) : base(message)
         {
         }
     }
