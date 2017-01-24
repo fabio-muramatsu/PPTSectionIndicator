@@ -22,5 +22,29 @@ namespace PPT_Section_Indicator.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowStartButtonInstructions {
+            get {
+                return ((bool)(this["ShowStartButtonInstructions"]));
+            }
+            set {
+                this["ShowStartButtonInstructions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowFirstStepButtonInstructions {
+            get {
+                return ((bool)(this["ShowFirstStepButtonInstructions"]));
+            }
+            set {
+                this["ShowFirstStepButtonInstructions"] = value;
+            }
+        }
     }
 }

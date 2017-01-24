@@ -5,6 +5,8 @@ using System.Text;
 using System.Xml.Linq;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
+using System.Diagnostics;
+using PPT_Section_Indicator.Properties;
 
 namespace PPT_Section_Indicator
 {
@@ -13,6 +15,8 @@ namespace PPT_Section_Indicator
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            if (Debugger.IsAttached)
+                Settings.Default.Reset();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

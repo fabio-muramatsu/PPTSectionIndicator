@@ -157,6 +157,12 @@
     <Compile Include="MainRibbon.Designer.cs">
       <DependentUpon>MainRibbon.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageCheckboxDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageCheckboxDialog.Designer.cs">
+      <DependentUpon>MessageCheckboxDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgressDialogBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,9 @@
     <Compile Include="Util.cs" />
     <EmbeddedResource Include="MainRibbon.resx">
       <DependentUpon>MainRibbon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageCheckboxDialog.resx">
+      <DependentUpon>MessageCheckboxDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProgressDialogBox.resx">
       <DependentUpon>ProgressDialogBox.cs</DependentUpon>
@@ -183,6 +192,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="PPT Section Indicator_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -191,6 +201,7 @@
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SectionIndicatorUserControl.cs">
       <SubType>UserControl</SubType>
