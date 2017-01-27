@@ -221,22 +221,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\next.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\start.png" />
+    <None Include="Resources\image_1069300.gif" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\info.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\done.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cancel.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\image_1069300.gif" />
+    <None Include="Resources\next.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

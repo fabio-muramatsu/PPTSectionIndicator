@@ -208,6 +208,36 @@ namespace PPT_Section_Indicator
             progressDialog.Show();      
         }
 
+        private void StepOneAboutButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            bool showInstructions = Properties.Settings.Default.ShowStartButtonInstructions;
+            MessageCheckboxDialog dialog = new MessageCheckboxDialog(START_BUTTON_INSTRUCTIONS);
+            dialog.SetCheckBoxState(!showInstructions);
+            Properties.Settings.Default.ShowStartButtonInstructions = !dialog.ShowDialogForResult();
+            Properties.Settings.Default.Save();
+        }
+
+        private void StepTwoAboutButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            bool showInstructions = Properties.Settings.Default.ShowFirstStepButtonInstructions;
+            MessageCheckboxDialog dialog = new MessageCheckboxDialog(STEP_ONE_BUTTON_INSTRUCTIONS);
+            dialog.SetCheckBoxState(!showInstructions);
+            Properties.Settings.Default.ShowFirstStepButtonInstructions = !dialog.ShowDialogForResult();
+            Properties.Settings.Default.Save();
+        }
+
+
+        private void CleanupButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            cleanupPresentation();
+            EnableAddInStart(null);
+        }
+
+        private void ShowDocumentationButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            Process.Start("https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/README.md");
+        }
+
         public async void StepThreePostDialogShown()
         {
             progressDialog.TopMost = true;
@@ -236,12 +266,6 @@ namespace PPT_Section_Indicator
 
             
 
-        }
-
-        private void CleanupButton_Click(object sender, RibbonControlEventArgs e)
-        {
-            cleanupPresentation();
-            EnableAddInStart(null);
         }
 
         private void cleanupPresentation()

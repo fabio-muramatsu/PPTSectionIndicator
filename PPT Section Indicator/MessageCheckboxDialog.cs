@@ -12,6 +12,7 @@ namespace PPT_Section_Indicator
 {
     public partial class MessageCheckboxDialog : Form
     {
+
         public MessageCheckboxDialog()
         {
             InitializeComponent();
@@ -31,6 +32,11 @@ namespace PPT_Section_Indicator
         {
             ShowDialog();
             return ShowCheckBox.Checked;
+        }
+
+        public void SetCheckBoxState(bool state)
+        {
+            ShowCheckBox.Checked = state;
         }
     }
 }
