@@ -46,6 +46,8 @@ namespace PPT_Section_Indicator
             "When you're done, press the Done button.\n\n" +
             "For more details, please check the documentation.";
 
+        private const string DOC_URL = "https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/README.md";
+
         private const int DEFAULT_SECTION_SPACING = 150;
 
         private Dictionary<String, PowerPoint.Shape> formatShapes = new Dictionary<string, PowerPoint.Shape>();
@@ -235,7 +237,7 @@ namespace PPT_Section_Indicator
 
         private void ShowDocumentationButton_Click(object sender, RibbonControlEventArgs e)
         {
-            Process.Start("https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/README.md");
+            Process.Start(DOC_URL);
         }
 
         public async void StepThreePostDialogShown()
