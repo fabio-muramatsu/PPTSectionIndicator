@@ -64,14 +64,26 @@ namespace PPT_Section_Indicator
         {
             Globals.ThisAddIn.Application.AfterPresentationOpen += new PowerPoint.EApplication_AfterPresentationOpenEventHandler(EnableAddInStart);
             Globals.ThisAddIn.Application.AfterNewPresentation += new PowerPoint.EApplication_AfterNewPresentationEventHandler(EnableAddInStart);
-            Globals.ThisAddIn.Application.PresentationClose += new PowerPoint.EApplication_PresentationCloseEventHandler(DisableAddIn);
+            Globals.ThisAddIn.Application.PresentationClose += new PowerPoint.EApplication_PresentationCloseEventHandler(PresentationCloseCallback);
 
-            DisableAddIn(null);
+            EnableAddInStart(null);
         }
 
         private void StartButton_Click(object sender, RibbonControlEventArgs e)
         {
-            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+
+            PowerPoint.Presentation presentation;
+
+            try
+            {
+                presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            }
+            catch (COMException)
+            {
+                Util.ShowErrorMessage("There is no opened presentation");
+                return;
+            }
+
             includeSlideMarkers = slideMarkerCheckBox.Checked;
 
             if(Util.GetCleanupItems().Count() > 0)
@@ -213,7 +225,7 @@ namespace PPT_Section_Indicator
         private void StepOneAboutButton_Click(object sender, RibbonControlEventArgs e)
         {
             bool showInstructions = Properties.Settings.Default.ShowStartButtonInstructions;
-            MessageCheckboxDialog dialog = new MessageCheckboxDialog(START_BUTTON_INSTRUCTIONS);
+            MessageCheckboxDialog dialog = new MessageCheckboxDialog(String.Format(START_BUTTON_INSTRUCTIONS, slideNumbers.First()));
             dialog.SetCheckBoxState(!showInstructions);
             Properties.Settings.Default.ShowStartButtonInstructions = !dialog.ShowDialogForResult();
             Properties.Settings.Default.Save();
@@ -526,6 +538,8 @@ namespace PPT_Section_Indicator
             stepOneNextButton.Enabled = false;
             stepTwoDoneButton.Enabled = false;
             cleanPresentationButton.Enabled = true;
+            stepOneAboutButton.Enabled = false;
+            stepTwoAboutButton.Enabled = false;
         }
 
         public void EnableAddInStepOne()
@@ -535,6 +549,8 @@ namespace PPT_Section_Indicator
             startButton.Enabled = false;
             stepOneNextButton.Enabled = true;
             stepTwoDoneButton.Enabled = false;
+            stepOneAboutButton.Enabled = true;
+            stepTwoAboutButton.Enabled = false;
         }
 
         public void EnableAddInStepTwo()
@@ -544,16 +560,16 @@ namespace PPT_Section_Indicator
             startButton.Enabled = false;
             stepOneNextButton.Enabled = false;
             stepTwoDoneButton.Enabled = true;
+            stepOneAboutButton.Enabled = false;
+            stepTwoAboutButton.Enabled = true;
         }
 
-        public void DisableAddIn(PowerPoint.Presentation presentation)
+        public void PresentationCloseCallback(PowerPoint.Presentation presentation)
         {
-            slideMarkerCheckBox.Enabled = false;
-            slideRangeEditBox.Enabled = false;
-            startButton.Enabled = false;
-            stepOneNextButton.Enabled = false;
-            cleanPresentationButton.Enabled = false;
-            stepTwoDoneButton.Enabled = false;
+            EnableAddInStart(presentation);
+            formatShapes.Clear();
+            positionMarkers.Clear();
+            positionTextBoxes.Clear();
         }
     }
 }
