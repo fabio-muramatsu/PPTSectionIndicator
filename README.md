@@ -60,7 +60,11 @@ Before proceeding, it’s important to define some naming conventions I’ve ado
 
 The image below illustrates these concepts, assuming the current slide is slide number 1.
 
+![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/elements_legend.png )
+
 In the first step, the goal is to define the formatting of each element presented in the image. The tool should insert objects as shown below. 
+
+![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/format_sample.png )
 
 The purpose of each object should be clear at this point. The textboxes represent active and inactive sections, and (from left to right) the markers represent the current slide, slides in the active section and slides in inactive sections.
 
