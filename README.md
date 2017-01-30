@@ -46,6 +46,10 @@ This add-in has a few straightforward settings:
 
 **Include slide markers**: This checkbox alternates between the two modes of operation, as explained before in this document;
 
+**Include hyperlinks**: Sets whether to treat section textboxes and slide markers as hyperlinks, pointing to their respective slides. When this option is enabled, you can click on the elements to navigate slides, as shown below.
+
+![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/with_hyperlinks.gif )
+
 **Slides to edit**: Determines which slides to include when processing the presentation. This option is useful if there are slides are not to be included in the marker count (e.g., title slides, appendices, etc.). For instance, if the first slide of the presentation were the title, you could include slides 2 through 9 only. This affects the tool in the following way:
 
 * Slide 1 won’t be processed. In other words, the progress indicator won’t be added in the first slide;
