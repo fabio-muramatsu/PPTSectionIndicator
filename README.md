@@ -76,7 +76,7 @@ Before proceeding, it’s important to define some naming conventions I’ve ado
 
 The image below illustrates these concepts, assuming the current slide is slide number 1.
 
-![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/elements_legend.png )
+<img src="https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/elements_legend.png" width="500"/>
 
 In the first step, the goal is to define the formatting of each element presented in the image. The tool should insert objects as shown below. 
 
