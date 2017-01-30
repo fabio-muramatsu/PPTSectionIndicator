@@ -150,6 +150,11 @@ namespace PPT_Section_Indicator
             MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        public static void ShowMessage(String message)
+        {
+            MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.OK);
+        }
+
         public static DialogResult ShowWarningQuery(String message)
         {
             return MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
@@ -187,6 +192,30 @@ namespace PPT_Section_Indicator
                     return s;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets the section index from the textbox name.
+        /// </summary>
+        /// <param name="textboxName">The string representing the marker name.</param>
+        /// <param name="sectionIndex">The section index corresponding to the textbox name.</param>
+        /// <returns>True if the processing was successful, False otherwise.</returns>
+        public static bool TryGetSectionIndexFromTextboxName(string textboxName, out int sectionIndex)
+        {
+            sectionIndex = -1;
+            if (!textboxName.StartsWith(MainRibbon.POSITION_TEXT_BOX))
+                return false;
+
+            string[] parts = textboxName.Split('_');
+            try
+            {
+                sectionIndex = int.Parse(parts[parts.Length - 1]);
+                return true;
+            }
+            catch (Exception e) when (e is ArgumentNullException || e is FormatException || e is OverflowException)
+            {
+                return false;
+            }
         }
 
         /// <summary>

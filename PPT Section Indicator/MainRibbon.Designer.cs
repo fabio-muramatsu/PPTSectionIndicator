@@ -42,13 +42,15 @@
             this.group2 = this.Factory.CreateRibbonGroup();
             this.group3 = this.Factory.CreateRibbonGroup();
             this.group4 = this.Factory.CreateRibbonGroup();
+            this.hyperlinkCheckBox = this.Factory.CreateRibbonCheckBox();
             this.startButton = this.Factory.CreateRibbonButton();
-            this.cleanPresentationButton = this.Factory.CreateRibbonButton();
-            this.stepTwoDoneButton = this.Factory.CreateRibbonButton();
-            this.showDocumentationButton = this.Factory.CreateRibbonButton();
             this.stepOneNextButton = this.Factory.CreateRibbonButton();
             this.stepOneAboutButton = this.Factory.CreateRibbonButton();
+            this.stepTwoDoneButton = this.Factory.CreateRibbonButton();
             this.stepTwoAboutButton = this.Factory.CreateRibbonButton();
+            this.cleanPresentationButton = this.Factory.CreateRibbonButton();
+            this.showDocumentationButton = this.Factory.CreateRibbonButton();
+            this.aboutButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
@@ -68,6 +70,7 @@
             // group1
             // 
             this.group1.Items.Add(this.slideMarkerCheckBox);
+            this.group1.Items.Add(this.hyperlinkCheckBox);
             this.group1.Items.Add(this.slideRangeEditBox);
             this.group1.Items.Add(this.startButton);
             this.group1.Label = "Settings";
@@ -108,8 +111,17 @@
             // 
             this.group4.Items.Add(this.cleanPresentationButton);
             this.group4.Items.Add(this.showDocumentationButton);
+            this.group4.Items.Add(this.aboutButton);
             this.group4.Label = "Misc.";
             this.group4.Name = "group4";
+            // 
+            // hyperlinkCheckBox
+            // 
+            this.hyperlinkCheckBox.Label = "Include hyperlinks";
+            this.hyperlinkCheckBox.Name = "hyperlinkCheckBox";
+            this.hyperlinkCheckBox.ScreenTip = "Include hyperlinks";
+            this.hyperlinkCheckBox.SuperTip = "Sets whether to include hyperlinks on elements, allowing slide navigation by clic" +
+    "king on them.";
             // 
             // startButton
             // 
@@ -122,40 +134,6 @@
             this.startButton.SuperTip = "Start processing slides. Ensure that your presentation is properly divided into s" +
     "ections before starting.";
             this.startButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StartButton_Click);
-            // 
-            // cleanPresentationButton
-            // 
-            this.cleanPresentationButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.cleanPresentationButton.Label = "Cleanup";
-            this.cleanPresentationButton.Name = "cleanPresentationButton";
-            this.cleanPresentationButton.OfficeImageId = "InkEraseMode";
-            this.cleanPresentationButton.ScreenTip = "Cleanup elements";
-            this.cleanPresentationButton.ShowImage = true;
-            this.cleanPresentationButton.SuperTip = "Cleans elements added by PPT Section Indicator from your presentation.";
-            this.cleanPresentationButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.CleanupButton_Click);
-            // 
-            // stepTwoDoneButton
-            // 
-            this.stepTwoDoneButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.stepTwoDoneButton.Label = "Done";
-            this.stepTwoDoneButton.Name = "stepTwoDoneButton";
-            this.stepTwoDoneButton.OfficeImageId = "AcceptInvitation";
-            this.stepTwoDoneButton.ScreenTip = "Done";
-            this.stepTwoDoneButton.ShowImage = true;
-            this.stepTwoDoneButton.SuperTip = "Finishes step 2 (positioning elements) and starts processing every slide in the s" +
-    "pecified range.";
-            this.stepTwoDoneButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StepTwoDoneButton_Click);
-            // 
-            // showDocumentationButton
-            // 
-            this.showDocumentationButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.showDocumentationButton.Label = "Show Documentation";
-            this.showDocumentationButton.Name = "showDocumentationButton";
-            this.showDocumentationButton.OfficeImageId = "FunctionsLogicalInsertGallery";
-            this.showDocumentationButton.ScreenTip = "Show documentation";
-            this.showDocumentationButton.ShowImage = true;
-            this.showDocumentationButton.SuperTip = "Opens online documentation for this tool.";
-            this.showDocumentationButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ShowDocumentationButton_Click);
             // 
             // stepOneNextButton
             // 
@@ -177,6 +155,18 @@
             this.stepOneAboutButton.ShowImage = true;
             this.stepOneAboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StepOneAboutButton_Click);
             // 
+            // stepTwoDoneButton
+            // 
+            this.stepTwoDoneButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.stepTwoDoneButton.Label = "Done";
+            this.stepTwoDoneButton.Name = "stepTwoDoneButton";
+            this.stepTwoDoneButton.OfficeImageId = "AcceptInvitation";
+            this.stepTwoDoneButton.ScreenTip = "Done";
+            this.stepTwoDoneButton.ShowImage = true;
+            this.stepTwoDoneButton.SuperTip = "Finishes step 2 (positioning elements) and starts processing every slide in the s" +
+    "pecified range.";
+            this.stepTwoDoneButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StepTwoDoneButton_Click);
+            // 
             // stepTwoAboutButton
             // 
             this.stepTwoAboutButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -185,6 +175,37 @@
             this.stepTwoAboutButton.Name = "stepTwoAboutButton";
             this.stepTwoAboutButton.ShowImage = true;
             this.stepTwoAboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.StepTwoAboutButton_Click);
+            // 
+            // cleanPresentationButton
+            // 
+            this.cleanPresentationButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.cleanPresentationButton.Label = "Cleanup";
+            this.cleanPresentationButton.Name = "cleanPresentationButton";
+            this.cleanPresentationButton.OfficeImageId = "InkEraseMode";
+            this.cleanPresentationButton.ScreenTip = "Cleanup elements";
+            this.cleanPresentationButton.ShowImage = true;
+            this.cleanPresentationButton.SuperTip = "Cleans elements added by PPT Section Indicator from your presentation.";
+            this.cleanPresentationButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.CleanupButton_Click);
+            // 
+            // showDocumentationButton
+            // 
+            this.showDocumentationButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.showDocumentationButton.Label = "Show Documentation";
+            this.showDocumentationButton.Name = "showDocumentationButton";
+            this.showDocumentationButton.OfficeImageId = "FunctionsLogicalInsertGallery";
+            this.showDocumentationButton.ScreenTip = "Show documentation";
+            this.showDocumentationButton.ShowImage = true;
+            this.showDocumentationButton.SuperTip = "Opens online documentation for this tool.";
+            this.showDocumentationButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ShowDocumentationButton_Click);
+            // 
+            // aboutButton
+            // 
+            this.aboutButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.aboutButton.Label = "About";
+            this.aboutButton.Name = "aboutButton";
+            this.aboutButton.OfficeImageId = "ChangeToTentativeAcceptInvitation";
+            this.aboutButton.ShowImage = true;
+            this.aboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.AboutButton_Click);
             // 
             // MainRibbon
             // 
@@ -222,6 +243,8 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton cleanPresentationButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group4;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton showDocumentationButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton aboutButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox hyperlinkCheckBox;
     }
 
     partial class ThisRibbonCollection

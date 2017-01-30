@@ -27,8 +27,11 @@ namespace PPT_Section_Indicator
 
         private const string GROUPED_SHAPES = "SectionIndicator_GroupedItems";
 
+        private const string ABOUT_MESSAGE =
+            "PPT Section Indicator v0.1.1\n\n" +
+            "Written by Fábio Muramatsu and released under the MIT License";
         private const string CLEANUP_MESSAGE =
-            "Your presentation contains elements that need to be cleaned before proceeding.Would you like to clean them and proceed?\n\n" +
+            "Your presentation contains elements that need to be cleaned before proceeding. Would you like to clean them and proceed?\n\n" +
             "If you've run this tool before, press YES to proceed. However, if this is the first time you run the tool on this presentation, it is likely that " +
             "it contains elements that will conflict with this tool. Press NO, and read the documentation to remove those conflicts.";
         private const string ONE_SECTION_MESSAGE = "PPT Section Indicator requires at least two sections if \"Include slide markers\" is not selected";
@@ -54,7 +57,7 @@ namespace PPT_Section_Indicator
         private Dictionary<int, PowerPoint.Shape> positionTextBoxes = new Dictionary<int, PowerPoint.Shape>();
         private Dictionary<int, PowerPoint.Shape> positionMarkers = new Dictionary<int, PowerPoint.Shape>();
 
-        bool includeSlideMarkers;
+        bool includeSlideMarkers, includeHyperlinks;
         IList<int> slideNumbers, sectionNumbers;
         IDictionary<int, IList<int>> slidesPerSection;
 
@@ -80,11 +83,12 @@ namespace PPT_Section_Indicator
             }
             catch (COMException)
             {
-                Util.ShowErrorMessage("There is no opened presentation");
+                Util.ShowErrorMessage("There is no open presentation");
                 return;
             }
 
             includeSlideMarkers = slideMarkerCheckBox.Checked;
+            includeHyperlinks = hyperlinkCheckBox.Checked;
 
             if(Util.GetCleanupItems().Count() > 0)
             {
@@ -252,12 +256,21 @@ namespace PPT_Section_Indicator
             Process.Start(DOC_URL);
         }
 
+        private void AboutButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            Util.ShowMessage(ABOUT_MESSAGE);
+        }
+
         public async void StepThreePostDialogShown()
         {
             progressDialog.TopMost = true;
             try
             {
                 PowerPoint.Shape groupedShapes = StepThreeGroupShapes();
+                if (includeHyperlinks)
+                {
+                    StepThreeInsertHyperlinks(groupedShapes);
+                }
                 await Task.Run(() => StepThreePopulateSelectedSlides(groupedShapes, progressDialog));
                 EnableAddInStart(null);
 
@@ -420,12 +433,32 @@ namespace PPT_Section_Indicator
                 s.Select(selectionMode);
             }
 
-
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
             PowerPoint.ShapeRange selectedShapes = presentation.Windows[1].Selection.ShapeRange;
             PowerPoint.Shape groupedShapes = selectedShapes.Group();
             groupedShapes.Name = GROUPED_SHAPES;
+
             return groupedShapes;
+        }
+
+        private void StepThreeInsertHyperlinks(PowerPoint.Shape groupedElements)
+        {
+            int sectionIndex, slideIndex;
+            foreach(PowerPoint.Shape s in groupedElements.GroupItems)
+            {
+                if (s.Name.StartsWith(POSITION_TEXT_BOX))
+                {
+                    Util.TryGetSectionIndexFromTextboxName(s.Name, out sectionIndex);
+                    s.ActionSettings[PowerPoint.PpMouseActivation.ppMouseClick].Action = PowerPoint.PpActionType.ppActionHyperlink;
+                    s.ActionSettings[PowerPoint.PpMouseActivation.ppMouseClick].Hyperlink.SubAddress = slidesPerSection[sectionIndex].First().ToString();
+                }
+                else if (s.Name.StartsWith(POSITION_SLIDE_MARKER))
+                {
+                    Util.TryGetSlideAndSectionIndexFromMarkerName(s.Name, out sectionIndex, out slideIndex);
+                    s.ActionSettings[PowerPoint.PpMouseActivation.ppMouseClick].Action = PowerPoint.PpActionType.ppActionHyperlink;
+                    s.ActionSettings[PowerPoint.PpMouseActivation.ppMouseClick].Hyperlink.SubAddress = slideIndex.ToString();
+                }
+            }
         }
 
         private void StepThreePopulateSelectedSlides(PowerPoint.Shape groupedShapes, ProgressDialogBox progressDialog)
@@ -475,7 +508,7 @@ namespace PPT_Section_Indicator
             }
         }
 
-        public void UpdateMarkers(PowerPoint.Shape groupedShapes, int section, int slideIndex)
+        private void UpdateMarkers(PowerPoint.Shape groupedShapes, int section, int slideIndex)
         {
             PowerPoint.Shape currentSlideMarker = formatShapes[FORMAT_CURRENT_SLIDE_SLIDE_MARKER];
             PowerPoint.Shape activeSlideMarker = formatShapes[FORMAT_ACTIVE_SECTION_SLIDE_MARKER];
