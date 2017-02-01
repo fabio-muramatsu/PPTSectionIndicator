@@ -66,6 +66,11 @@ namespace PPT_Section_Indicator
             }
         }
 
+        /// <summary>
+        /// Returns a dictionaty classifying the input slides into their respective sections.
+        /// </summary>
+        /// <param name="slides">The set of slides that are to be classified into sections.</param>
+        /// <returns>A dictionary whose keys are sections and values are slide indexes within the section.</returns>
         public static IDictionary<int, IList<int>> ClassifySlidesIntoSections(IEnumerable<int> slides)
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
@@ -107,6 +112,11 @@ namespace PPT_Section_Indicator
             }
         }
 
+        /// <summary>
+        /// Gets the section index where a given slide is located.
+        /// </summary>
+        /// <param name="slideIndex">The slide index whose section index is to be returned.</param>
+        /// <returns>The section index where the specified slide index is located.</returns>
         public static int GetSectionIndex(int slideIndex)
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
@@ -128,6 +138,13 @@ namespace PPT_Section_Indicator
             }
         }
 
+        /// <summary>
+        /// Gets the index of a slide relative to its containing section, taking into account only the slides specified in the input range.
+        /// For instance, the first slide in the second section will yield a return value 1.
+        /// </summary>
+        /// <param name="slidesPerSection">The dictionary containing slides classified per section.</param>
+        /// <param name="slideIndex">The absolute slide index.</param>
+        /// <returns>The slide index relative to its section, or -1 if slideIndex is not valid or not specified in the input range.</returns>
         public static int GetSlideIndexWithinSection(IDictionary<int, IList<int>> slidesPerSection, int slideIndex)
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
@@ -160,6 +177,10 @@ namespace PPT_Section_Indicator
             return MessageBox.Show(message, "PPT Section Indicator", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
         }
 
+        /// <summary>
+        /// Gets a collection of objects that will be cleaned up.
+        /// </summary>
+        /// <returns>A collection of objects that will be cleaned up.</returns>
         public static IEnumerable<PowerPoint.Shape> GetCleanupItems()
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
@@ -175,6 +196,9 @@ namespace PPT_Section_Indicator
             return matches;
         }
 
+        /// <summary>
+        /// Cleans up the shapes created by this tool.
+        /// </summary>
         public static void CleanupShapes()
         {
             foreach (PowerPoint.Shape shape in GetCleanupItems())
@@ -183,6 +207,12 @@ namespace PPT_Section_Indicator
             }
         }
 
+        /// <summary>
+        /// Returns the textbox that represents the input section.
+        /// </summary>
+        /// <param name="groupedShape">The PowerPoint.Shape object that represents the grouped shape.</param>
+        /// <param name="section">The section index that the textbox represents.</param>
+        /// <returns>A PowerPoint.Shape textbox that represents the input section.</returns>
         public static PowerPoint.Shape FindTextBoxFromGroup(PowerPoint.Shape groupedShape, int section)
         {
             string name = MainRibbon.POSITION_TEXT_BOX + "_" + section;

@@ -290,10 +290,8 @@ namespace PPT_Section_Indicator
             {
                 progressDialog.Close();
             }
-
-            
-
         }
+
 
         private void cleanupPresentation()
         {
