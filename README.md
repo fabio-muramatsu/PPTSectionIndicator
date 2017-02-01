@@ -2,6 +2,8 @@
 
 PPT Section indicator is a PowerPoint VSTO add-in that adds section indicators on presentations, adapting them dynamically to highlight the current section or slide. The motivation behind this add-in is to automate the rather boring task of copying/pasting and reformatting objects in every slide of a presentation just to create a simple progress tracker.
 
+![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/screenshot.png)
+
 **Read this document entirely before using the add-in**. This will help you understand how it works and prevent further problems.
 
 **Table of Contents**
