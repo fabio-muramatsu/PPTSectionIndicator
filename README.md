@@ -2,6 +2,8 @@
 
 PPT Section indicator is a PowerPoint VSTO add-in that adds section indicators on presentations, adapting them dynamically to highlight the current section or slide. The motivation behind this add-in is to automate the rather boring task of copying/pasting and reformatting objects in every slide of a presentation just to create a simple progress tracker.
 
+**Read this document entirely before using the add-in**. This will help you understand how it works and prevent further problems.
+
 **Table of Contents**
 
 1. [Preconditions](#preconditions)
@@ -10,7 +12,8 @@ PPT Section indicator is a PowerPoint VSTO add-in that adds section indicators o
 4. [Usage instructions](#usage-instructions)
   1. [Step 1 - Formatting](#step-1-formatting)
   2. [Step 2 - Positioning](#step-2-positioning)
-5. [Troubleshooting](#troubleshooting)
+5. [Download](#download) 
+6. [Troubleshooting](#troubleshooting)
 
 ## Preconditions
 
@@ -38,7 +41,7 @@ Mode (b), in turn, would place markers for each slide, as shown below.
 Before anything, I will list here a few things that you should be aware of before using this tool.
 
 * First of all, **backup your presentation** before running the tool. It’s quite certain that I didn’t find all the bugs in it, and you may end up losing some information. Use it on your own risk;
-* This add-in uses the clipboard to process objects among slides. Any content that you were holding on the clipboard will be lost once you run it;
+* This add-in uses the clipboard to process objects among slides. Any content that you were holding on the clipboard will be lost once you run it. Also, **don't use the clipboard while the tool is running**;
 * As an application-level add-in that needs to hold state, this tool doesn’t work well with multiple open presentations. The state seems to propagate between open instances of PowerPoint, making thigs quite messy. To avoid any problems, **use this tool only with a single instance of PowerPoint running**;
 * Since this tool creates objects in the presentation, PowerPoint requires it to name them (this naming process happens every time you add something to your presentation, but PowerPoint picks some name automatically). To avoid clashes, I’ve decided to name each element starting with “SectionIndicator”, as shown in the selection pane below. If, by any chance, this tool complains about naming collisions and you’ve never run it before on your presentation, you managed to include an object in your presentation and name it starting with this reserved string. **Do not run the cleanup function of the tool**, as it will erase this object thinking that the tool itself created it in a previous run. Instead, find it on the selection pane and rename it.
 
@@ -94,6 +97,11 @@ In this step, you should define formatting aspects such as font size, font color
 One you’re done formatting the elements, press the "Next" button. The base textboxes and markers from the first step will be replaced by the formatted elements, considering the sections you’ve defined in your presentation. Now you should place the elements to your liking, taking into account that slide markers are ordered from left to right, starting a new line if necessary. You should not change anything related to formatting, as it will be lost when propagating the objects to all slides. If you’d like to make changes, cleanup the presentation and start over.
 
 Once you’re done placing the elements, press the "Done" button. PPT Section Indicator will propagate the elements to all slides in the specified range.
+
+## Download
+
+Visit the [Releases](https://github.com/fabio-muramatsu/PPTSectionIndicator/releases) page to find the most recent version. The installer is packed in ZIP format. Extract it and run the setup
+file. If you have installed a previous version, you will have to remove it before installing.
 
 ## Troubleshooting
 
