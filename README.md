@@ -69,7 +69,7 @@ The syntax through which you specify slide ranges is very similar to the one use
 
 ## Usage instructions
 
-Once you divide the presentation in sections and specify the settings, press the “Start” button to begin. This tool works in three steps, in an attempt to balance flexibility with usability.
+Once you divide the presentation in sections and specify the settings, press the “Start” button to begin. This tool works in two steps, as explained below.
 
 ### Step 1: Formatting
 
@@ -100,7 +100,7 @@ Once you’re done placing the elements, press the "Done" button. PPT Section In
 
 ## Download
 
-Visit the [Releases](https://github.com/fabio-muramatsu/PPTSectionIndicator/releases) page to find the most recent version. The installer is packed in ZIP format. Extract it and run the setup
+Visit the [Releases](https://github.com/fabio-muramatsu/PPTSectionIndicator/releases) page to find the most recent version. The installer is packed in ZIP format, so just extract it and run the setup
 file. If you have installed a previous version, you will have to remove it before installing.
 
 ## Troubleshooting
