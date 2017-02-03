@@ -181,7 +181,7 @@ namespace PPT_Section_Indicator
         /// Gets a collection of objects that will be cleaned up.
         /// </summary>
         /// <returns>A collection of objects that will be cleaned up.</returns>
-        public static IEnumerable<PowerPoint.Shape> GetCleanupItems()
+        public static ICollection<PowerPoint.Shape> GetCleanupItems()
         {
             PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
             LinkedList<PowerPoint.Shape> matches = new LinkedList<PowerPoint.Shape>();
@@ -290,7 +290,7 @@ namespace PPT_Section_Indicator
 
         public static bool IsPresentationClean()
         {
-            if (GetCleanupItems().Count() > 0)
+            if (GetCleanupItems().Count > 0)
                 return false;
             else return true;
         }

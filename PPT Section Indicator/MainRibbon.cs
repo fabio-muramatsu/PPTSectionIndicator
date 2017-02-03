@@ -90,7 +90,7 @@ namespace PPT_Section_Indicator
             includeSlideMarkers = slideMarkerCheckBox.Checked;
             includeHyperlinks = hyperlinkCheckBox.Checked;
 
-            if(Util.GetCleanupItems().Count() > 0)
+            if(Util.GetCleanupItems().Count > 0)
             {
                 DialogResult result = Util.ShowWarningQuery(CLEANUP_MESSAGE);
                 if (result == DialogResult.Yes)
