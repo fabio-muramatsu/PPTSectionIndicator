@@ -87,6 +87,12 @@ namespace PPT_Section_Indicator
                 return;
             }
 
+            if (presentation.SectionProperties.Count == 0)
+            {
+                Util.ShowErrorMessage("There are no sections in the presentation");
+                return;
+            }
+
             includeSlideMarkers = slideMarkerCheckBox.Checked;
             includeHyperlinks = hyperlinkCheckBox.Checked;
 
@@ -106,15 +112,9 @@ namespace PPT_Section_Indicator
                 slidesPerSection = Util.ClassifySlidesIntoSections(slideNumbers);
                 sectionNumbers = slidesPerSection.Keys.OrderBy(i => i).ToList();
             }
-            catch (Exception exc) when(exc is SlideRangeFormatException || exc is SlideOutOfRangeException)
+            catch (Exception exc) when(exc is SlideRangeFormatException || exc is SlideOutOfRangeException || exc is NoSectionException)
             {
                 Util.ShowErrorMessage(exc.Message);
-                return;
-            }
-
-            if(presentation.SectionProperties.Count == 0)
-            {
-                Util.ShowErrorMessage("There are no sections in the presentation");
                 return;
             }
 
