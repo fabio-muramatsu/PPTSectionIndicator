@@ -247,7 +247,14 @@ namespace PPT_Section_Indicator
 
         private void CleanupButton_Click(object sender, RibbonControlEventArgs e)
         {
-            cleanupPresentation();
+            try
+            {
+                cleanupPresentation();
+            }
+            catch (NoActivePresentation exc)
+            {
+                Util.ShowErrorMessage(exc.Message);
+            }
             EnableAddInStart(null);
         }
 

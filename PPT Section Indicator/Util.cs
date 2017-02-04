@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -183,7 +184,16 @@ namespace PPT_Section_Indicator
         /// <returns>A collection of objects that will be cleaned up.</returns>
         public static ICollection<PowerPoint.Shape> GetCleanupItems()
         {
-            PowerPoint.Presentation presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            PowerPoint.Presentation presentation;
+            try
+            {
+                presentation = Globals.ThisAddIn.Application.ActivePresentation;
+            }
+            catch (COMException)
+            {
+               throw new NoActivePresentation("There is no open presentation");
+            }
+
             LinkedList<PowerPoint.Shape> matches = new LinkedList<PowerPoint.Shape>();
             foreach (PowerPoint.Slide slide in presentation.Slides)
             {
@@ -340,6 +350,13 @@ namespace PPT_Section_Indicator
     class SlideOutOfRangeException : Exception
     {
         public SlideOutOfRangeException(string message) : base(message)
+        {
+        }
+    }
+
+    public class NoActivePresentation : Exception
+    {
+        public NoActivePresentation(string message) : base(message)
         {
         }
     }
