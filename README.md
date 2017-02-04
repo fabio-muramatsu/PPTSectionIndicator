@@ -90,13 +90,13 @@ In the first step, the goal is to define the formatting of each element presente
 
 ![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/format_sample.png )
 
-The purpose of each object should be clear at this point. The textboxes represent active and inactive sections, and (from left to right) the markers represent the current slide, slides in the active section and slides in inactive sections.
+The purpose of each object should be clear at this point. The textboxes represent active and inactive sections, and (from left to right) the markers represent the current slide, slides in the active section and slides in inactive sections. The tool will use the style applied to those elements as a reference when creating the actual elements in the final step.
 
-In this step, you should define formatting aspects such as font size, font color, slide marker shape, size and color. Don’t worry about positioning elements in this step.
+Here, you should define formatting aspects such as font size, font color, slide marker shape, size and color. Don’t worry about positioning elements in this step.
 
 ### Step 2: Positioning
 
-One you’re done formatting the elements, press the "Next" button. The base textboxes and markers from the first step will be replaced by the formatted elements, considering the sections you’ve defined in your presentation. Now you should place the elements to your liking, taking into account that slide markers are ordered from left to right, starting a new line if necessary. You should not change anything related to formatting, as it will be lost when propagating the objects to all slides. If you’d like to make changes, cleanup the presentation and start over.
+One you’re done formatting the elements, press the "Next" button. The base textboxes and markers from the first step will be replaced by the formatted elements, considering the sections you’ve defined in your presentation. Now you should place the elements to your liking, taking into account that slide markers are ordered from left to right, starting a new line if necessary. It's also possible to resize elements (textbox and marker width/height), but you should not change anything else related to formatting, as it will be lost when propagating the objects to all slides. If you’d like to make changes, cleanup the presentation and start over.
 
 Once you’re done placing the elements, press the "Done" button. PPT Section Indicator will propagate the elements to all slides in the specified range.
 
@@ -114,6 +114,10 @@ This is a known limitation of the tool. As a VSTO add-in, its state seems to be 
 #### When pressing the "Start" button, PPT Section Indicator shows a message asking me to cleanup elements. What should I do?
 
 This happens when the add-in found elements in your presentation whose names will clash with the ones used by the tool. As noted in the [Warnings](#warnings-important) section, I've decided to name each element starting with "SectionIndicator", so if PPT Section Indicator finds any element starting with this reserved string, it will show this warning. If you’ve run this tool before in your presentation and some elements created by it are still present, it is ok to clean them up and proceed. However, if you’ve never run the tool before, this means that some element is named starting with "SectionIndicator". Find this element using the selection pane and rename it.
+
+#### When pressing the "Start button", I can't see the elements described in [Step 1](#step-1-formatting)
+
+The add-in creates the elements in the first slide of the range you've specified. For instance, if the range is 2-9, the elements will be inserted in slide 2. This slide number is also shown in the message box once you press "Start", if you haven't disabled it. PPT Section Indicator should select this slide automatically, but if this doesn't happen (read [step 1](#step-1-formatting) for more details), select it manually.
 
 #### I've received the following message: "PPT Section Indicator requires at least two sections if 'Include slide markers' is not selected"
 
