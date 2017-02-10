@@ -4,7 +4,7 @@ PPT Section indicator is a PowerPoint VSTO add-in that adds section indicators o
 
 ![](https://github.com/fabio-muramatsu/PPTSectionIndicator/blob/master/doc/images/screenshot.png)
 
-**Read this document entirely before using the add-in**. This will help you understand how it works and prevent further problems.
+**Read this document in its entirety before using the add-in**. This will help you understand how it works and prevent further problems.
 
 **Table of Contents**
 
@@ -102,10 +102,15 @@ Once you’re done placing the elements, press the "Done" button. PPT Section In
 
 ## Download
 
-Visit the [Releases](https://github.com/fabio-muramatsu/PPTSectionIndicator/releases) page to find the most recent version. The installer is packed in ZIP format, so just extract it and run the setup
-file. If you have installed a previous version, you will have to remove it before installing.
+Visit the [Releases](https://github.com/fabio-muramatsu/PPTSectionIndicator/releases) page to find the most recent version. The installer is packed in ZIP format. Before extracting, it is important to trust the file, since Windows automatically recognizes it as downloaded from the internet and may prevent it from installing. To do that, right-click the ZIP file and, on the General tab, there's a Security field claiming that "The file came from another computer" and so on. Simply click on Unblock and you're done (more info [here](http://www.howtogeek.com/70012/what-causes-the-file-downloaded-from-the-internet-warning-and-how-can-i-easily-remove-it/)). Now, extract the contents and run the setup file.
+
+If you have installed a previous version, you will have to remove it before reinstalling.
 
 ## Troubleshooting
+
+#### When running the installer, I get the following message: "Customized functionality in this application will not work because the certificate used to sign the deployment manifest for SolutionName is not trusted. Contact your administrator for further assistance"
+
+This happens because Office has a rather strict policy when installing solutions coming from the web (more info [here](https://msdn.microsoft.com/en-us/library/bb772087.aspx)). Read the [Download](#download) section for instructions on how to trust the installer.
 
 #### The add-in misbehaves when more than one instance of PowerPoint is open
 
