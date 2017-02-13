@@ -231,7 +231,9 @@ namespace PPT_Section_Indicator
                 if (s.Name.Equals(name))
                     return s;
             }
-            return null;
+
+            //If no shape was found, throw an exception
+            throw new AddinException("FindTextBoxFromGrou - Grouped shape did not contain specified section");
         }
 
         /// <summary>
