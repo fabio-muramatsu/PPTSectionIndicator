@@ -28,7 +28,7 @@ namespace PPT_Section_Indicator
         private const string GROUPED_SHAPES = "SectionIndicator_GroupedItems";
 
         private const string ABOUT_MESSAGE =
-            "PPT Section Indicator v1.0.0\n\n" +
+            "PPT Section Indicator v1.0.1\n\n" +
             "Written by Fábio Muramatsu and released under the MIT License";
         private const string CLEANUP_MESSAGE =
             "Your presentation contains elements that need to be cleaned before proceeding. Would you like to clean them and proceed?\n\n" +
@@ -587,6 +587,7 @@ namespace PPT_Section_Indicator
         public void EnableAddInStart(PowerPoint.Presentation presentation)
         {
             slideMarkerCheckBox.Enabled = true;
+            hyperlinkCheckBox.Enabled = true;
             slideRangeEditBox.Enabled = true;
             startButton.Enabled = true;
             stepOneNextButton.Enabled = false;
@@ -599,6 +600,7 @@ namespace PPT_Section_Indicator
         public void EnableAddInStepOne()
         {
             slideMarkerCheckBox.Enabled = false;
+            hyperlinkCheckBox.Enabled = false;
             slideRangeEditBox.Enabled = false;
             startButton.Enabled = false;
             stepOneNextButton.Enabled = true;
@@ -610,6 +612,7 @@ namespace PPT_Section_Indicator
         public void EnableAddInStepTwo()
         {
             slideMarkerCheckBox.Enabled = false;
+            hyperlinkCheckBox.Enabled = false;
             slideRangeEditBox.Enabled = false;
             startButton.Enabled = false;
             stepOneNextButton.Enabled = false;
