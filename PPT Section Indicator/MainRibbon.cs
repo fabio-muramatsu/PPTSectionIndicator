@@ -28,7 +28,7 @@ namespace PPT_Section_Indicator
         private const string GROUPED_SHAPES = "SectionIndicator_GroupedItems";
 
         private const string ABOUT_MESSAGE =
-            "PPT Section Indicator v1.0.1\n\n" +
+            "PPT Section Indicator v1.0.2\n\n" +
             "Written by Fábio Muramatsu and released under the MIT License";
         private const string CLEANUP_MESSAGE =
             "Your presentation contains elements that need to be cleaned before proceeding. Would you like to clean them and proceed?\n\n" +
@@ -538,6 +538,9 @@ namespace PPT_Section_Indicator
             int slideIndexWithinSection = Util.GetSlideIndexWithinSection(slidesPerSection, slideIndex);
             int prevSlide = slideNumbers[slideNumbers.IndexOf(slideIndex) - 1];
 
+            int effectiveSection = sectionNumbers.IndexOf(section) - 1;
+            int prevSection = effectiveSection == -1? -1 : sectionNumbers[effectiveSection];
+
             foreach (PowerPoint.Shape s in groupedShapes.GroupItems)
             {
                 //Not interested in section text boxes
@@ -553,7 +556,7 @@ namespace PPT_Section_Indicator
                 //Handle marker formatting when section changes
                 if (slideIndexWithinSection == 1 && section > 1)
                 {
-                    if(markerSection == section - 1)
+                    if(markerSection == prevSection)
                     {
                         inactiveSlideMarker.PickUp();
                         s.Apply();
