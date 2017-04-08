@@ -6,14 +6,14 @@ PPT Section indicator is a PowerPoint VSTO add-in that adds section indicators o
 
 **Read this document in its entirety before using the add-in**. This will help you understand how it works and prevent further problems.
 
-**Table of Contents**
+**Contents**
 
 1. [Preconditions](#preconditions)
 2. [Modes of operation](#modes-of-operation)
 3. [Warnings](#warnings-important)
 4. [Usage instructions](#usage-instructions)
-  1. [Step 1 - Formatting](#step-1-formatting)
-  2. [Step 2 - Positioning](#step-2-positioning)
+   1. [Step 1 - Formatting](#step-1-formatting)
+   2. [Step 2 - Positioning](#step-2-positioning)
 5. [Download](#download) 
 6. [Troubleshooting](#troubleshooting)
 
